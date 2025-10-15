@@ -13,3 +13,14 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Place {
+  id  Int @id @default(autoincrement())
+  name String
+  category String
+  description String
+  bestTime String
+  latitude Float 
+  longitude Float
+
+}
