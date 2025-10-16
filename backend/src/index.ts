@@ -1,11 +1,19 @@
 import express from 'express'
-
-const app = express();
+import cors from 'cors';
+import dotenv from 'dotenv';
+import placeRoutes from './routes/places.js'
 const PORT = 8080;
+const app = express();
 
-app.get("/",(req,res)=>{
-    res.send("hello")
-})
+dotenv.config();
+
+app.use(cors())
+app.use(express.json());
+
+app.use('/api/v1/places', placeRoutes);
+
+
+
 
 
 app.listen(PORT,()=>{
