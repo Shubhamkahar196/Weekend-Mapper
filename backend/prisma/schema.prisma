@@ -14,13 +14,62 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Place {
-  id  Int @id @default(autoincrement())
-  name String
-  category String
-  description String
-  bestTime String
-  latitude Float 
-  longitude Float
+enum Role {
+  USER
+  ADMIN
+}
 
+model User {
+  id Int @id @default(autoincrement())
+  name String
+  email String @unique
+  password String
+  role Role @default(USER)
+  createdAt DateTime @default(now())
+  places Place[] @relation("UserPlaces")
+  photos Photo[] @relation("UserPhotos")
+  reviews Review[] @relation("UserReviews")
+}
+
+
+model Place {
+  id           Int      @id @default(autoincrement())
+  title        String
+  description  String?
+  category     String?
+  imageUrl     String?
+  latitude     Float
+  longitude    Float
+  locationName String
+  address      String?
+  createdAt    DateTime @default(now())
+  userId       Int?
+  user         User?    @relation("UserPlaces", fields: [userId], references: [id])
+  photos       Photo[]  @relation("PlacePhotos")
+  reviews      Review[] @relation("PlaceReviews")
+}
+
+
+model Photo {
+  id        Int      @id @default(autoincrement())
+  url       String
+  publicId  String
+  latitude  Float?
+  longitude Float?
+  createdAt DateTime @default(now())
+  userId    Int?
+  user      User?    @relation("UserPhotos", fields: [userId], references: [id])
+  placeId   Int?
+  place     Place?   @relation("PlacePhotos", fields: [placeId], references: [id])
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+  userId    Int?
+  user      User?    @relation("UserReviews", fields: [userId], references: [id])
+  placeId   Int
+  place     Place    @relation("PlaceReviews", fields: [placeId], references: [id])
 }
